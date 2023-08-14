@@ -1,5 +1,6 @@
 package com.alura.jdbc.controller;
 
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,8 +14,20 @@ public class ProductoController {
 		// TODO
 	}
 
-	public List<?> listar() {
+	public List<?> listar() throws SQLException {
 		// TODO
+		Connection con = DriverManager.getConnection(
+				"jdbc:mysql://localhost/control_de_stock?useTimeZone=true&serverTimeZone=UTC",
+				"root",
+				"29072003");
+
+		Statement statement = con.createStatement();
+
+		boolean execute = statement.execute("select id, nombre, descripcion, cantidad from producto");
+
+		ResultSet resultSet = statement.getResultSet();
+
+		con.close();
 		return new ArrayList<>();
 	}
 
