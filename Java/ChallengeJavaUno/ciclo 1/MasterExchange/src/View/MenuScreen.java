@@ -30,12 +30,7 @@ public class MenuScreen {
 
     public void Validations(String optionSelected) {
         Validations.MenuScreenValidations validations = new Validations.MenuScreenValidations();
-
-        if(validations.optionValidation(optionSelected)){ exitQuestion(); }
-        else {}
+        validations.optionValidation(optionSelected);
     }
 
-    public void exitQuestion(){
-        int optionExitQuestion = Integer.valueOf(JOptionPane.showConfirmDialog(null,"Estas seguro que desea salir"));
-    }
 }
