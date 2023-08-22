@@ -1,6 +1,7 @@
-package br.com.alura.tienda.modelo;
+package com.latam.alura.tienda.modelo;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,42 +11,36 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "productos")
-public class Producto {
-	
+@Table(name="productos")
+public class Producto{
+
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
-	private String nombre; 
-	private String descripcion; 
+	
+	
+	private String nombre;
+	private String descripcion;
 	private BigDecimal precio;
+	private LocalDate fechaDeRegistro= LocalDate.now();
 	
 	@ManyToOne
 	private Categoria categoria;
+
 	
 	public Producto() {
-		super();
+		
 	}
-	
 	public Producto(String nombre, String descripcion, BigDecimal precio, Categoria categoria) {
 		this.nombre = nombre;
 		this.descripcion = descripcion;
 		this.precio = precio;
 		this.categoria = categoria;
 	}
-	
-	public Categoria getCategoria() {
-		return categoria;
-	}
-	public void setCategoria(Categoria categoria) {
-		this.categoria = categoria;
-	}
 	public Long getId() {
 		return id;
 	}
-	public void setId(Long id) {
-		this.id = id;
-	}
+
 	public String getNombre() {
 		return nombre;
 	}
@@ -63,6 +58,5 @@ public class Producto {
 	}
 	public void setPrecio(BigDecimal precio) {
 		this.precio = precio;
-	} 
-
+	}
 }

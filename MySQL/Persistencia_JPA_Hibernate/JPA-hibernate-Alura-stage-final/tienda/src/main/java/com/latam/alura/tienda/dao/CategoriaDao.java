@@ -1,13 +1,13 @@
-package br.com.alura.tienda.dao;
+package com.latam.alura.tienda.dao;
 
 import javax.persistence.EntityManager;
 
-import br.com.alura.tienda.modelo.Categoria;
+import com.latam.alura.tienda.modelo.Categoria;
 
 public class CategoriaDao {
-
-	private EntityManager em;
 	
+	private EntityManager em;
+
 	public CategoriaDao(EntityManager em) {
 		this.em = em;
 	}
@@ -21,7 +21,7 @@ public class CategoriaDao {
 	}
 	
 	public void remover(Categoria categoria) {
-		categoria = em.merge(categoria);
+		categoria=this.em.merge(categoria);
 		this.em.remove(categoria);
 	}
 
