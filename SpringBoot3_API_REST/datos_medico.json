@@ -1,0 +1,12 @@
+{
+	"nombre": "Juan",
+	"email": "oiwe@gmail.com",
+	"documento": "123132",
+	"especialidad": "ortopedia",
+	"direccion": {
+		"calle": "calle 1",
+		"distrito": "distrito 1",
+		"ciudad": "Lima",
+		"complemento": "dsf"
+	}
+}
