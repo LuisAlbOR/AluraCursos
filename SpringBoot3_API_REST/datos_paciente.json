@@ -1,0 +1,13 @@
+{
+	"nombre": "Pedro Fernandez",
+	"email": "pdritoFer@gmail.com",
+	"curp": "fkdj2i32",
+	"telefono": "323234",
+	"direccion": {
+		"calle": "calle 1",
+		"numero": "2",
+		"complemento": "dsf",
+		"distrito": "distrito 1",
+		"ciudad": "Lima"
+	}
+}
