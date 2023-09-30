@@ -1,0 +1,175 @@
+//Metodo post para registro de pacientes.
+@RestController
+@RequestMapping("pacientes")
+public class PacienteController {
+
+    @PostMapping
+    public void registrar(@RequestBody DatosRegistroPaciente datos) {
+        System.out.println("datos recebidos: " +datos);
+    }
+
+}
+
+//DTO para los pacientes
+public record DatosRegistroPaciente(
+        String nombre,
+        String email,
+        String telefono,
+        String documentoIdentidad,
+        DatosDireccion direccion
+) {
+}
+
+//El DTO DatosDireccion será el mismo utilizado en la funcionalidad de registro de médicos.
+-----------------------------------------------------------------------------------------------
+//Creando la entidad pacientes
+@Getter
+@EqualsAndHashCode(of = "id")
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity(name = "Paciente")
+@Table(name = "pacientes")
+public class Paciente {
+
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String nombre;
+    private String email;
+    private String documentoIdentidad;
+    private String telefono;
+
+    @Embedded
+    private Direccion direccion;
+
+    public Paciente(DatosRegistroPaciente datos) {
+        this.nombre = datos.nombre();
+        this.email = datos.email();
+        this.telefono = datos.telefono();
+        this.documentoIdentidad = datos.documentoIdentidad();
+        this.direccion = new Direccion(datos.direccion());
+    }
+
+}
+
+//creando el repositorio
+public interface PacienteRepository extends JpaRepository<Paciente, Long> {
+}
+
+//Cambiando las clases controller y DTO
+@RestController
+@RequestMapping("pacientes")
+public class PacienteController {
+
+    @Autowired
+    private PacienteRepository repository;
+
+    @PostMapping
+    @Transactional
+    public void registrar(@RequestBody @Valid DatosRegistroPaciente datos) {
+        repository.save(new Paciente(datos));
+    }
+
+public record DatosRegistroPaciente(
+        @NotBlank String nombre,
+        @NotBlank @Email String email,
+        @NotBlank String telefono,
+        @NotBlank @Pattern(regexp = "\\d{3}\\.?\\d{3}\\.?\\d{3}\\-?\\d{2}") String documentoIdentidad,
+        @NotNull @Valid DatosDireccion direccion
+) {
+}
+
+//Creando una migracion
+create table pacientes(
+    id bigint not null auto_increment,
+    nombre varchar(100) not null,
+    email varchar(100) not null unique,
+    documentoIdentidad varchar(14) not null unique,
+    telefono varchar(20) not null,
+    urbanización varchar(100) not null,
+    distrito varchar(100) not null,
+    codigoPostal varchar(9) not null,
+    complemento varchar(100),
+    numero varchar(20),
+    provincia varchar(100) not null,
+    ciudad varchar(100) not null,
+
+    primary key(id)
+   	)
+----------------------------------------------------------------------------------------------------
+//Lista de pacientes
+@GetMapping
+public Page<DatosListaPaciente> listar(@PageableDefault(page = 0, size = 10, sort = {"nombre"}) Pageable paginacion {
+    return repository.findAll(paginacion).map(DatosListaPaciente::new);
+}
+
+//DTO para listar los  pacientes
+public record DatosListaPaciente(String nombre, String email, String documentoIdentidad) {
+    public DatosListaPaciente(Paciente paciente) {
+        this(paciente.getNombre(), paciente.getEmail(), paciente.getDocumentoIdentidad());
+    }
+}
+
+----------------------------------------------------------------------------------------------------
+//Metodos para modificar y eliminar de pacientes
+@PutMapping
+@Transactional
+public void atualizar(@RequestBody @Valid DatosActualizacionPaciente datos) {
+    var paciente = repository.getReferenceById(datos.id());
+    paciente.atualizarInformacion(datos);
+}
+
+@DeleteMapping("/{id}")
+@Transactional
+public void remover(@PathVariable Long id) {
+    var paciente = repository.getReferenceById(id);
+    paciente.inactivar();
+}
+
+//Crear un atributo y nuevos metodos en la entidad Paciente, demás de modificar su constructor
+private Boolean activo;
+
+public Paciente(DatosRegistroPaciente datos) {
+    this.activo = true;
+    this.nombre = datos.nombre();
+    this.email = datos.email();
+    this.telefono = datos.telefono();
+    this.documentoIdentidad = datos.documentoIdentidad();
+    this.direccion = new Direccion(datos.direccion());
+}
+
+public void atualizarInformacion(DatosActualizacionPaciente datos) {
+    if (datos.nombre() != null)
+        this.nombre = datos.nombre();
+
+    if (datos.telefono() != null)
+        this.telefono = datos.telefono();
+
+    if (datos.direccion() != null)
+        direccion.atualizarInformacion(datos.direccion());
+}
+
+public void inactivar() {
+    this.activo = false;
+}
+
+//Crear DTO
+public record DatosActualizacionMedico(
+    Long id,
+    String nombre,
+    String telefono,
+    @Valid DatosActualizacionDireccion direccion
+) {
+}
+
+//Modificar DatosListaPaciente
+public record DatosListaPaciente(Long id, String nombre, String email, String documentoIdentidad) {
+    public DatosListaPaciente(Paciente paciente) {
+        this(paciente.getId(), paciente.getNombre(), paciente.getEmail(), paciente.getDocumentoIdentidad());
+    }
+}
+
+//Crear nueva migracion
+alter table pacientes add column activo tinyint;
+update pacientes set activo = 1;
+alter table pacientes modify activo tinyint not null;
