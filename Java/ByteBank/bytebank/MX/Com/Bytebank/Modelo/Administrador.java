@@ -14,9 +14,7 @@ public class Administrador extends Funcionario implements Autenticable {
 	}
 	
 	@Override
-	public double getBonificacion() {
-		return this.getSalario();
-	}
+	public double getADouble
 
 	@Override
 	public void setClave(String clave) {

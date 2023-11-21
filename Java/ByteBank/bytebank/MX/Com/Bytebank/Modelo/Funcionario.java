@@ -1,7 +1,8 @@
 package bytebank.bytebank.MX.Com.Bytebank.Modelo;
 
 
-public abstract class Funcionario {
+public abstract class
+Funcionario {
 
     private String nombre;
     private String documento;
