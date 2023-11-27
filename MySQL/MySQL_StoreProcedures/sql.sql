@@ -7,3 +7,6 @@ CREATE PROCEDURE `reajuste_comision`(vporcentaje FLOAT)
 BEGIN
 UPDATE tabla_de_vendedores SET PORCENTAJE_COMISION =  PORCENTAJE_COMISION * (1 + vporcentaje);
 END $$
+
+--¿Cuál es el comando para tratar los errores?
+DECLARE EXIT HANDLER FOR --codigo del gestor para el error a tratar
