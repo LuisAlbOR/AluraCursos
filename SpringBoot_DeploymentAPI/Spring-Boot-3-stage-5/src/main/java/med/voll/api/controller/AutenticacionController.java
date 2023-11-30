@@ -20,7 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/login")
 @Tag(name = "Autenticacion", description = "obtiene el token para el usuario asignado que da acceso al resto de endpoint")
-public class AutenticacionController {
+public class
+AutenticacionController {
 
     @Autowired
     private AuthenticationManager authenticationManager;
